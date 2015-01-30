@@ -1,0 +1,91 @@
+﻿<Page
+    x:Class="AuthenticatorApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    d:DataContext="{d:DesignData Source=FakeDesignData/DesignData.xaml}"
+    >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid 
+            Grid.Row="0" Background="#FF00587F"
+            >
+            <TextBlock 
+                Style="{StaticResource HeaderTextBlockStyle}" 
+                FontSize="30" 
+                Margin="15,5,0,5" FontFamily="Global User Interface" >Authenticator</TextBlock>
+        </Grid>
+
+        <ListView 
+            Grid.Row="1"
+            DataContext="{Binding AccountListCollection}"
+            Margin="15,5,0,0"
+            >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Width="380" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Icon -->
+                        <!-- Details -->
+                        <Grid Grid.Column="0" Height="75">
+                            <Ellipse Height="70" Width="70">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding AccountIcon}"></ImageBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
+                        <!-- Details -->
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <!-- Token -->
+                            <TextBlock 
+                                Grid.Row="0"
+                                Style="{StaticResource HeaderTextBlockStyle}" 
+                                Foreground="#FF00AFFF"
+                                Text="{Binding CurrentMfToken}" Margin="15,0,0,0" Height="55" FontFamily="Global User Interface" FontSize="48"/>
+                            <!-- Account Info -->
+                            <TextBlock
+                                Grid.Row="1"
+                                Style="{StaticResource BaseTextBlockStyle}"
+                                Text="{Binding AccountName}" FontFamily="Global User Interface" Margin="15,0,0,0" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </ListView>
+
+        <Grid
+            Grid.Row="2" Background="#FF00202E">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <SymbolIcon 
+                Grid.Column="3"
+                Symbol="Add" 
+                Foreground="#FF008CCC"/>
+            <SymbolIcon 
+            	Grid.Column="4"
+            	Symbol="More" 
+            	Foreground="#FF008CCC"/>
+        </Grid>
+    </Grid>
+</Page>

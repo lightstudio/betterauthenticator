@@ -1,0 +1,17 @@
+﻿[
+    {
+        "AccountName": "Microsoft:example@contoso.com",
+        "AccountIcon": "ms-appx:///Assets/Services/MirosoftAccount.png",
+        "CurrentMfToken": "123456"
+    },
+    {
+        "AccountName": "Github:imbushuo",
+        "AccountIcon": "ms-appx:///Assets/Services/Github.png",
+        "CurrentMfToken": "234567"
+    },
+    {
+        "AccountName": "Linode:imbushuo",
+        "AccountIcon": "ms-appx:///Assets/Services/Linode.png",
+        "CurrentMfToken": "987654"
+    }
+]

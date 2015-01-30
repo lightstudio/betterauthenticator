@@ -1,0 +1,21 @@
+﻿<Data:MainViewModel 
+    xmlns:Data="using:AuthenticatorApp.ViewModels"
+    xmlns:Models="using:AuthenticatorApp.Models">
+    <Data:MainViewModel.AccountListCollection>
+        <Models:Account
+            AccountName="Microsoft:example@contoso.com"
+            CurrentMfToken="123456"
+            AccountIcon="ms-appx:///Assets/Services/MirosoftAccount.png"
+         />
+        <Models:Account
+            AccountName="Github:imbushuo"
+            CurrentMfToken="233333"
+            AccountIcon="ms-appx:///Assets/Services/Github.png"
+         />
+        <Models:Account
+            AccountName="Linode:imbushuo"
+            CurrentMfToken="987654"
+            AccountIcon="ms-appx:///Assets/Services/Linode.png"
+         />
+    </Data:MainViewModel.AccountListCollection>
+</Data:MainViewModel>
