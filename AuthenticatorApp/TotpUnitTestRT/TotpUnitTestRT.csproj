@@ -113,7 +113,10 @@
     <SDKReference Include="TestPlatform, Version=11.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Totp.cs" />
+    <Compile Include="Tests\Database\DatabaseTest.cs" />
+    <Compile Include="Tests\Sync\Encryption\Encryption.cs" />
+    <Compile Include="Tests\Sync\SyncEngine\SyncEngine.cs" />
+    <Compile Include="Tests\Totp\Totp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +145,7 @@
       <Name>AuthenticatorApp.Windows</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

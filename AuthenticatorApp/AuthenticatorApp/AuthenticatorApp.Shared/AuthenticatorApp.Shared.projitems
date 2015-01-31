@@ -15,7 +15,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Encryption\AesEncryptionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LocalStorage\LocalStorageProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LocalStorage\SQLite\SQLite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LocalStorage\SQLite\SQLiteAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Account.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sync\IRoamingProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sync\OneDriveRoamingProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timestamp\UnixTimeStamp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TOTP\Base32.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TOTP\TotpProvider.cs" />
@@ -26,8 +32,5 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Services\Linode.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Services\MicrosoftAccount.png" />
     <Content Include="$(MSBuildThisFileDirectory)Models\DesignData.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)FakeDesignData\" />
   </ItemGroup>
 </Project>
