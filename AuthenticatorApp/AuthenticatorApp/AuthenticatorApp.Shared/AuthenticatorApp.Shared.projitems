@@ -16,6 +16,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Models\Account.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timestamp\UnixTimeStamp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TOTP\Base32.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TOTP\TotpProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MainViewModel.cs" />
   </ItemGroup>

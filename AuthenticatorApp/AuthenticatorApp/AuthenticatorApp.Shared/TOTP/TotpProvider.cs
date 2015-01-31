@@ -181,5 +181,54 @@ namespace AuthenticatorApp.Totp
             return result;
 
         }
+
+        /// <summary>
+        /// This method generates a TOTP value for the given
+        /// set of parameters.
+        /// </summary>
+        /// <param name="key">The shared secret, HEX encoded</param>
+        /// <param name="time">A value that reflects a time</param>
+        /// <param name="returnDigits">Number of digits to return</param>
+        /// <param name="crypto">The crypto function to use</param>
+        /// <returns>A numeric string in base 10 that includes
+        /// {@link truncationDigits} digits
+        /// </returns>
+        public static string GenerateTotp(string key,
+            string time,
+            int returnDigits,
+            MacAlgorithmEnum crypto)
+        {
+            var codeDigits = returnDigits;
+
+            // Using the counter
+            // First 8 bytes are for the movingFactor
+            // Compliant with base RFC 4226 (HOTP)
+            while (time.Length < 16)
+                time = "0" + time;
+
+            // Get the HEX in a Byte[]
+            var msg = StringToByteArray(time);
+            var k = StringToByteArray(key);
+            var hash = HmacSha(crypto, k, msg);
+
+            // put selected bytes into result int
+            var offset = hash[hash.Length - 1] & 0xf;
+
+            var binary =
+                ((hash[offset] & 0x7f) << 24) |
+                ((hash[offset + 1] & 0xff) << 16) |
+                ((hash[offset + 2] & 0xff) << 8) |
+                (hash[offset + 3] & 0xff);
+
+            var otp = binary % DigitsPower[codeDigits];
+
+            var result = otp.ToString();
+            while (result.Length < codeDigits)
+            {
+                result = "0" + result;
+            }
+            return result;
+
+        }
     }
 }

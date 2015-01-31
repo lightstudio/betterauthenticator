@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using AuthenticatorApp.Totp;
@@ -208,6 +209,50 @@ namespace TotpUnitTestRT
             while (steps.Length < 16) steps = "0" + steps;
 
             return TotpProvider.GenerateTotp(seed64, steps, "8", TotpProvider.MacAlgorithmEnum.HmacSha512);
+        }
+
+        private static readonly int[] DigitsPower
+            // 0 1  2   3    4     5      6       7        8
+        = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
+
+        public static string GenerateTotpMicrosoft(byte[] keyBytes, string time, int returnDigits)
+        {
+            var array = TotpProvider.StringToByteArray(time);
+            var array2 = TotpProvider.HmacSha(TotpProvider.MacAlgorithmEnum.HmacSha1, keyBytes, array);
+
+            var num = (int)(array2[array2.Length - 1] & 15);
+            var num2 = (int)(array2[num] & 127) << 24 | (int)(array2[num + 1] & 255) << 16 | (int)(array2[num + 2] & 255) << 8 | (int)(array2[num + 3] & 255);
+            var text = (num2 % DigitsPower[returnDigits]).ToString();
+            while (text.Length < returnDigits)
+            {
+                text = "0" + text;
+            }
+            return text;
+        }
+
+
+        [TestMethod]
+        public void GenerateSpecificHMacSha1Totp()
+        {
+            var seed = "werredsxsgfhtdfsde";
+            seed = seed.Trim();
+
+            var currentTime = (uint) AuthenticatorApp.Timestamp.UnixTimeStamp.GetCurrentUnixTimestampSeconds();
+
+            long T0 = 0;
+            long X = 30;
+
+            var T = (currentTime - T0) / X;
+            var steps = T.ToString("X").ToUpper();
+            while (steps.Length < 16) steps = "0" + steps;
+
+            var timeString = steps;
+
+            var data = TotpProvider.GenerateTotp(Base32.Base32ToHex(seed), 
+                timeString, 6, 
+                TotpProvider.MacAlgorithmEnum.HmacSha1);
+
+            Assert.AreEqual(GenerateTotpMicrosoft(TotpProvider.StringToByteArray(Base32.Base32ToHex(seed)), timeString, 6), data);
         }
 
 
