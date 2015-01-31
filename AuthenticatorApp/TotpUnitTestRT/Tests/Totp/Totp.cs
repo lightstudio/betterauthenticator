@@ -4,7 +4,7 @@ using System.Text;
 using AuthenticatorApp.Totp;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
-namespace TotpUnitTest
+namespace TotpUnitTestRT.Tests.Totp
 {
     public class TestTimeData
     {
@@ -13,8 +13,6 @@ namespace TotpUnitTest
         public string HMacSha256 { get; set; }
         public string HMacSha512 { get; set; }
     }
-    
-    // NOTE: IT CAN ONLY RUN ON EMULATOR.
 
     /// <summary>
     /// Totp Unit Testing class
@@ -37,7 +35,9 @@ namespace TotpUnitTest
         /// </summary>
         private const string Text = "The quick brown fox jumps over the lazy dog";
 
-        private TestTimeData[] _testTimeData =
+        #region Test Data
+
+        private readonly TestTimeData[] _testTimeData =
         {
             new TestTimeData
             {
@@ -83,6 +83,9 @@ namespace TotpUnitTest
             }
         };
 
+
+        #endregion
+
         /// <summary>
         /// HMAC-SHA1 pre-calculated result
         /// </summary>
@@ -102,8 +105,8 @@ namespace TotpUnitTest
         /// <summary>
         /// An exception should be thrown for null input.
         /// </summary>
-        [TestMethod, TestCategory("Mobile Hash Algorithm")]
-        public void CalcHmacSha1Scenario1Mobile()
+        [TestMethod, TestCategory("Hash Algorithm")]
+        public void CalcHmacSha1Scenario1Desktop()
         {
             // Please refer to wikipedia for the test data:
             // http://en.wikipedia.org/wiki/Hash-based_message_authentication_code#Examples_of_HMAC_.28MD5.2C_SHA1.2C_SHA256.29
@@ -125,8 +128,8 @@ namespace TotpUnitTest
         /// <summary>
         /// Calculcate HMAC-SHA1
         /// </summary>
-        [TestMethod, TestCategory("Mobile Hash Algorithm")]
-        public void CalcHmacSha1Scenario2Mobile()
+        [TestMethod, TestCategory("Hash Algorithm")]
+        public void CalcHmacSha1Scenario2Desktop()
         {
             var result = TotpProvider.HmacSha(TotpProvider.MacAlgorithmEnum.HmacSha1, _encoding.GetBytes(Key),
                 _encoding.GetBytes(Text));
@@ -138,8 +141,8 @@ namespace TotpUnitTest
         /// <summary>
         /// Calculcate HMAC-SHA256
         /// </summary>
-        [TestMethod, TestCategory("Mobile Hash Algorithm")]
-        public void CalcHmacSha256Scenario1Mobile()
+        [TestMethod, TestCategory("Hash Algorithm")]
+        public void CalcHmacSha256Scenario1Desktop()
         {
             var result = TotpProvider.HmacSha(TotpProvider.MacAlgorithmEnum.HmacSha256, _encoding.GetBytes(Key),
                 _encoding.GetBytes(Text));
@@ -153,15 +156,15 @@ namespace TotpUnitTest
         /// </summary>
         /// <param name="time">Time</param>
         /// <returns>TOTP</returns>
-        public string GenerateTotpHMacSha1FromTime(long time)
+        private static string GenerateTotpHMacSha1FromTime(long time)
         {
             // Seed for HMAC-SHA1 - 20 bytes
             const string seed = "3132333435363738393031323334353637383930";
 
-            long T0 = 0;
-            long X = 30;
+            const long t0 = 0;
+            const long x = 30;
 
-            var T = (time - T0) / X;
+            var T = (time - t0)/x;
             var steps = T.ToString("X").ToUpper();
             while (steps.Length < 16) steps = "0" + steps;
 
@@ -173,16 +176,16 @@ namespace TotpUnitTest
         /// </summary>
         /// <param name="time">Time</param>
         /// <returns>TOTP</returns>
-        public string GenerateTotpHMacSha256FromTime(long time)
+        private static string GenerateTotpHMacSha256FromTime(long time)
         {
             // Seed for HMAC-SHA256 - 32 bytes
-            var seed32 = "3132333435363738393031323334353637383930" +
-                         "313233343536373839303132";
+            const string seed32 = "3132333435363738393031323334353637383930" +
+                                  "313233343536373839303132";
 
-            long T0 = 0;
-            long X = 30;
+            const long t0 = 0;
+            const long x = 30;
 
-            var T = (time - T0) / X;
+            var T = (time - t0)/x;
             var steps = T.ToString("X").ToUpper();
             while (steps.Length < 16) steps = "0" + steps;
 
@@ -194,30 +197,74 @@ namespace TotpUnitTest
         /// </summary>
         /// <param name="time">Time</param>
         /// <returns>TOTP</returns>
-        public string GenerateTotpHMacSha512FromTime(long time)
+        private static string GenerateTotpHMacSha512FromTime(long time)
         {
             // Seed for HMAC-SHA512 - 64 bytes
-            var seed64 = "3132333435363738393031323334353637383930" +
-                         "3132333435363738393031323334353637383930" +
-                         "3132333435363738393031323334353637383930" +
-                         "31323334";
+            const string seed64 = "3132333435363738393031323334353637383930" +
+                                  "3132333435363738393031323334353637383930" +
+                                  "3132333435363738393031323334353637383930" +
+                                  "31323334";
 
-            long T0 = 0;
-            long X = 30;
+            const long t0 = 0;
+            const long x = 30;
 
-            var T = (time - T0) / X;
+            var T = (time - t0)/x;
             var steps = T.ToString("X").ToUpper();
             while (steps.Length < 16) steps = "0" + steps;
 
             return TotpProvider.GenerateTotp(seed64, steps, "8", TotpProvider.MacAlgorithmEnum.HmacSha512);
         }
 
+        private static readonly int[] DigitsPower
+            // 0 1  2   3    4     5      6       7        8
+        = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
+
+        private static string GenerateTotpMicrosoft(byte[] keyBytes, string time, int returnDigits)
+        {
+            var array = TotpProvider.StringToByteArray(time);
+            var array2 = TotpProvider.HmacSha(TotpProvider.MacAlgorithmEnum.HmacSha1, keyBytes, array);
+
+            var num = array2[array2.Length - 1] & 15;
+            var num2 = (array2[num] & 127) << 24 | (array2[num + 1] & 255) << 16 | (array2[num + 2] & 255) << 8 | array2[num + 3] & 255;
+            var text = (num2 % DigitsPower[returnDigits]).ToString();
+            while (text.Length < returnDigits)
+            {
+                text = "0" + text;
+            }
+            return text;
+        }
+
+
+        [TestMethod, TestCategory("TOTP")]
+        public void GenerateSpecificHMacSha1Totp()
+        {
+            var seed = "werredsxsgfhtdfsde";
+            seed = seed.Trim();
+
+            var currentTime = (uint) AuthenticatorApp.Timestamp.UnixTimeStamp.GetCurrentUnixTimestampSeconds();
+
+            const long t0 = 0;
+            const long x = 30;
+
+            var T = (currentTime - t0) / x;
+            var steps = T.ToString("X").ToUpper();
+            while (steps.Length < 16) steps = "0" + steps;
+
+            var timeString = steps;
+
+            var data = TotpProvider.GenerateTotp(Base32.Base32ToHex(seed), 
+                timeString, 6, 
+                TotpProvider.MacAlgorithmEnum.HmacSha1);
+
+            Assert.AreEqual(GenerateTotpMicrosoft(TotpProvider.StringToByteArray(Base32.Base32ToHex(seed)), timeString, 6), data);
+        }
+
 
         /// <summary>
         /// Test TOTP
         /// </summary>
-        [TestMethod, TestCategory("Mobile TOTP")]
-        public void CalcEmulatedTotpTokenMobile()
+        [TestMethod, TestCategory("TOTP")]
+        public void CalcEmulatedTotpToken()
         {
             foreach (var timegroup in _testTimeData)
             {
